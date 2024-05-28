@@ -3,6 +3,7 @@ import { Bot, Context, webhookCallback } from "grammy";
 export interface Env {
 	BOT_INFO: string;
 	BOT_TOKEN: string;
+	DB: D1Database;
 }
 
 export default {
