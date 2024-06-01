@@ -37,7 +37,7 @@ export function up(bot: Bot, db: D1Database) {
 			}
 		}
 		let column: string;
-		switch (lift) {
+			switch (lift) {
 			case "dl":
 				column = "deadlift_one_rep_max";
 				break;
@@ -50,6 +50,9 @@ export function up(bot: Bot, db: D1Database) {
 			case "sp":
 				column = "shoulder_press_one_rep_max";
 				break;
+			default:
+				await ctx.reply("Error: invalid lift. Use dl, sq, bp, or sp.");
+				return;
 		}
 		await db.prepare(
 			`UPDATE lift_data SET ${column} = ${column} + ? WHERE chat_id = ?`).bind(increment, ctx.chatId).run();
