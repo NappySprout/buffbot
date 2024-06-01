@@ -1,7 +1,13 @@
 import { Context, Bot } from "grammy";
 export function set(bot: Bot, db: D1Database) {
 	bot.command("set", async (ctx: Context) => {
-		const args = ctx.message.text.split(" ");
+		if (ctx.message && ctx.message.text) {
+		  const args = ctx.message.text.split(" ");
+		  // rest of the code
+		} else {
+		  await ctx.reply("Error: invalid command format. Use /set <lift> <positive integer>");
+		  return;
+		}
 		if (args.length !== 3) {
 			await ctx.reply("Error: invalid command format. Use /set <lift> <positive integer>");
 			return;
