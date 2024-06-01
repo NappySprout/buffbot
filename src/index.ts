@@ -6,6 +6,15 @@ export interface Env {
 	DB: D1Database;
 }
 
+import { start } from "./cmds/start"
+import { set } from "./cmds/set"
+
+const cmds = [
+	start,
+	set
+
+]
+
 export default {
 	async fetch(
 		request: Request,
@@ -14,9 +23,9 @@ export default {
 	): Promise<Response> {
 		const bot = new Bot(env.BOT_TOKEN, { botInfo: JSON.parse(env.BOT_INFO) });
 
-		bot.command("start", async (ctx: Context) => {
-			await ctx.reply("Hello, world!");
-		});
+		cmds.forEach(cmd => {
+			cmd(bot, env.DB)
+		})
 
 		return webhookCallback(bot, "cloudflare-mod")(request);
 	},

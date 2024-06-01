@@ -1,12 +1,13 @@
 import { Context, Bot } from "grammy";
 export function set(bot: Bot, db: D1Database) {
 	bot.command("set", async (ctx: Context) => {
+		let args = []
 		if (ctx.message && ctx.message.text) {
-		  const args = ctx.message.text.split(" ");
-		  // rest of the code
+			args = ctx.message.text.split(" ");
+			// rest of the code
 		} else {
-		  await ctx.reply("Error: invalid command format. Use /set <lift> <positive integer>");
-		  return;
+			await ctx.reply("Error: invalid command format. Use /set <lift> <positive integer>");
+			return;
 		}
 		if (args.length !== 3) {
 			await ctx.reply("Error: invalid command format. Use /set <lift> <positive integer>");
@@ -20,7 +21,7 @@ export function set(bot: Bot, db: D1Database) {
 		}
 		let column: string;
 		switch (lift) {
-			case "db":
+			case "dl":
 				column = "deadlift_one_rep_max";
 				break;
 			case "sq":
@@ -33,7 +34,7 @@ export function set(bot: Bot, db: D1Database) {
 				column = "shoulder_press_one_rep_max";
 				break;
 			default:
-				await ctx.reply("Error: invalid lift. Use db, sq, bp, or sp.");
+				await ctx.reply("Error: invalid lift. Use dl, sq, bp, or sp.");
 				return;
 		}
 		await db.prepare(`UPDATE lift_data SET ${column} = ? WHERE chat_id = ?`).bind(value, ctx.chatId).run();
