@@ -10,19 +10,26 @@ export function up(bot: Bot, db: D1Database) {
 			return;
 		}
 		if (args.length === 1) {
-		    await db.batch([
-		        db.prepare(`UPDATE lift_data SET deadlift_one_rep_max = deadlift_one_rep_max + 5 WHERE chat_id = ?`).bind(ctx.chatId),
-		        db.prepare(`UPDATE lift_data SET squat_one_rep_max = squat_one_rep_max + 5 WHERE chat_id = ?`).bind(ctx.chatId),
-		        db.prepare(`UPDATE lift_data SET bench_one_rep_max = bench_one_rep_max + 2.5 WHERE chat_id = ?`).bind(ctx.chatId),
-		        db.prepare(`UPDATE lift_data SET shoulder_press_one_rep_max = shoulder_press_one_rep_max + 2.5 WHERE chat_id = ?`).bind(ctx.chatId),
-		    ]);
-		    const [deadlift, squat, bench, press] = await db.batch([
-		        db.prepare(`SELECT deadlift_one_rep_max FROM lift_data WHERE chat_id = ?`).bind(ctx.chatId),
-		        db.prepare(`SELECT squat_one_rep_max FROM lift_data WHERE chat_id = ?`).bind(ctx.chatId),
-		        db.prepare(`SELECT bench_one_rep_max FROM lift_data WHERE chat_id = ?`).bind(ctx.chatId),
-		        db.prepare(`SELECT shoulder_press_one_rep_max FROM lift_data WHERE chat_id = ?`).bind(ctx.chatId),
-		    ]);
-		    await ctx.reply(`Success! Your new lifts one rep max are: Deadlift - ${deadlift}, Squat - ${squat}, Bench - ${bench}, Shoulder Press - ${press}`);
+			await db.batch([
+				db.prepare(`UPDATE lift_data SET deadlift_one_rep_max = deadlift_one_rep_max + 5 WHERE chat_id = ?`).bind(ctx.chatId),
+				db.prepare(`UPDATE lift_data SET squat_one_rep_max = squat_one_rep_max + 5 WHERE chat_id = ?`).bind(ctx.chatId),
+				db.prepare(`UPDATE lift_data SET bench_one_rep_max = bench_one_rep_max + 2.5 WHERE chat_id = ?`).bind(ctx.chatId),
+				db.prepare(`UPDATE lift_data SET shoulder_press_one_rep_max = shoulder_press_one_rep_max + 2.5 WHERE chat_id = ?`).bind(ctx.chatId),
+			]);
+			const results: Record<string, unknown>[] = (await db.prepare(`SELECT deadlift_one_rep_max, bench_one_rep_max, squat_one_rep_max, shoulder_press_one_rep_max FROM lift_data WHERE chat_id = ?`)
+				.bind(ctx.chatId)
+				.all()).results;
+			if (results.length === 0) {
+				await ctx.reply("No data found.");
+				return;
+			}
+			const message = `Here are your current lifts:
+			Deadlift: ${results[0].deadlift_one_rep_max}
+			Bench Press: ${results[0].bench_one_rep_max}
+			Squat: ${results[0].squat_one_rep_max}
+			Shoulder Press: ${results[0].shoulder_press_one_rep_max}`;
+			return await ctx.reply(message);
+
 		} else if (args.length < 2 || args.length > 3) {
 			await ctx.reply("Error: invalid command format. Use /up <lift> [increment]");
 			return;

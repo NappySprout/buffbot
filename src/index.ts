@@ -9,11 +9,15 @@ export interface Env {
 import { start } from "./cmds/start"
 import { set } from "./cmds/set"
 import { get } from "./cmds/get"
+import { up } from "./cmds/up"
+import { see } from "./cmds/see"
 
 const cmds = [
 	start,
 	set,
-	get
+	get,
+	up,
+	see
 
 ]
 
