@@ -10,11 +10,11 @@ export function up(bot: Bot, db: D1Database) {
 			return;
 		}
 		if (args.length === 1) {
-		    await Promise.all([
-		        db.prepare(`UPDATE lift_data SET deadlift_one_rep_max = deadlift_one_rep_max + 5 WHERE chat_id = ?`).bind(ctx.chatId).run(),
-		        db.prepare(`UPDATE lift_data SET squat_one_rep_max = squat_one_rep_max + 5 WHERE chat_id = ?`).bind(ctx.chatId).run(),
-		        db.prepare(`UPDATE lift_data SET bench_one_rep_max = bench_one_rep_max + 2.5 WHERE chat_id = ?`).bind(ctx.chatId).run(),
-		        db.prepare(`UPDATE lift_data SET shoulder_press_one_rep_max = shoulder_press_one_rep_max + 2.5 WHERE chat_id = ?`).bind(ctx.chatId).run(),
+		    await db.batch([
+		        db.prepare(`UPDATE lift_data SET deadlift_one_rep_max = deadlift_one_rep_max + 5 WHERE chat_id = ?`).bind(ctx.chatId),
+		        db.prepare(`UPDATE lift_data SET squat_one_rep_max = squat_one_rep_max + 5 WHERE chat_id = ?`).bind(ctx.chatId),
+		        db.prepare(`UPDATE lift_data SET bench_one_rep_max = bench_one_rep_max + 2.5 WHERE chat_id = ?`).bind(ctx.chatId),
+		        db.prepare(`UPDATE lift_data SET shoulder_press_one_rep_max = shoulder_press_one_rep_max + 2.5 WHERE chat_id = ?`).bind(ctx.chatId),
 		    ]);
 		    const [deadlift, squat, bench, press] = await Promise.all([
 		        db.prepare(`SELECT deadlift_one_rep_max FROM lift_data WHERE chat_id = ?`).bind(ctx.chatId).first('deadlift_one_rep_max'),
