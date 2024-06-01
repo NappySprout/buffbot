@@ -3,7 +3,7 @@ export function start(bot: Bot, db: D1Database) {
 	bot.command("start", async (ctx: Context) => {
 		const chat_id = ctx.chatId
 		const { results } = await db.prepare(
-			//sql query to insert chat_id and set all main lift int to 0 if chat_id already exist in db do nothing
+			`INSERT INTO lift_data (chat_id, bench_one_rep_max, deadlift_one_rep_max, squat_one_rep_max, shoulder_press_one_rep_max) VALUES ($1, 0, 0, 0, 0) ON CONFLICT (chat_id) DO NOTHING`
 		)
 			.bind(chat_id)
 			.all();
