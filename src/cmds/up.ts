@@ -56,6 +56,7 @@ export function up(bot: Bot, db: D1Database) {
 		}
 		await db.prepare(
 			`UPDATE lift_data SET ${column} = ${column} + ? WHERE chat_id = ?`).bind(increment, ctx.chatId).run();
-		await ctx.reply("Success!");
+		const newValue = await db.prepare(`SELECT ${column} FROM lift_data WHERE chat_id = ?`).bind(ctx.chatId).get();
+		await ctx.reply(`Success! Your new ${lift} one rep max is ${newValue}`);
 	});
 }
