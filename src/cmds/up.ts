@@ -37,7 +37,7 @@ export function up(bot: Bot, db: D1Database) {
 			}
 		}
 		let column: string;
-			switch (lift) {
+		switch (lift) {
 			case "dl":
 				column = "deadlift_one_rep_max";
 				break;
