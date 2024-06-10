@@ -17,8 +17,7 @@ const cmds = [
 	set,
 	get,
 	up,
-	see
-
+	see,
 ]
 
 export default {
@@ -28,6 +27,12 @@ export default {
 		ctx: ExecutionContext,
 	): Promise<Response> {
 		const bot = new Bot(env.BOT_TOKEN, { botInfo: JSON.parse(env.BOT_INFO) });
+		await bot.api.setMyCommands([
+			{ command: "set", description: "set <dl|sq|bp|sp> <number> (set main lifts 1RM amount)" },
+			{ command: "get", description: "get <dl|sq|bp|sp> <1|2|3|4> (get main lifts program on week 1, 2 , 3 or 4)" },
+			{ command: "up", description: "up <dl|sq|bp|sp> <number> (increment main lifts 1RM, if no args, increment all by default value)" },
+			{ command: "see", description: "see (see all 1RM)" },
+		]);
 
 		cmds.forEach(cmd => {
 			cmd(bot, env.DB)
